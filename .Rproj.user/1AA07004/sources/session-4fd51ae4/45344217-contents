@@ -1,0 +1,38 @@
+# Instalar y cargar las librerías necesarias
+install.packages("tidyverse")
+install.packages("scales")
+library(tidyverse)
+library(scales)
+
+# Cargar el archivo de datos
+datos <- read_csv("F:/excel/datos_bienesraices.csv")
+
+# Exploración y limpieza de datos
+datos <- datos %>% 
+  distinct() %>%  # Eliminar duplicados
+  drop_na()       # Eliminar filas con valores faltantes
+
+# Visualizar la estructura y algunas filas después de la limpieza
+glimpse(datos)
+head(datos)
+
+# Análisis de Datos Exploratorio (EDA)
+# 1. Distribución de los precios de venta
+ggplot(datos, aes(x = Precio_Venta)) +
+  geom_histogram(bins = 30, color = "black", fill = "lightblue") +
+  labs(title = "Distribución de los Precios de Venta", x = "Precio de Venta", y = "Frecuencia")
+
+# 2. Relación entre el tamaño y el precio de venta
+ggplot(datos, aes(x = Tamaño_m2, y = Precio_Venta)) +
+  geom_point(color = "blue", alpha = 0.6) +
+  labs(title = "Relación entre Tamaño y Precio de Venta", x = "Tamaño (m2)", y = "Precio de Venta")
+
+# 3. Boxplot del precio de venta por estado de la propiedad con más números en el eje Y
+ggplot(datos, aes(x = Estado, y = Precio_Venta)) +
+  geom_boxplot(fill = "lightgreen") +
+  labs(title = "Precio de Venta por Estado de la Propiedad", x = "Estado", y = "Precio de Venta") +
+  scale_y_continuous(labels = scales::comma, breaks = seq(100000, 500000, by = 50000))
+
+# Guardar el conjunto de datos limpio
+write_csv(datos, "datos_bienesraices_limpios.csv")
+
